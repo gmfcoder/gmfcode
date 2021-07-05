@@ -2,54 +2,58 @@ from tkinter import *
 
 root=Tk()
 root.title("Caesar Cipher")
-root.geometry("600x250")
+root.geometry("660x400")
 root.resizable(False,False)
-
+CaesarImg=PhotoImage(file="caesar1.gif")
 Radval=IntVar()
-shift=2
+Shiftval=IntVar()
+Startchar=64
+Endchar=91
 
-def Select():
+def RadioSelect():
+    Shift=Shiftval.get()
     if Radval.get()==1:
-        Encode()
+        Encode(Startchar,Endchar,Shift)
     else:
-        Decode()
+        Decode(Startchar,Endchar,Shift)
 
-def Encode():
+def Encode(Startchr,Endchr,Shft):
     ResultLabel.configure(text="Encoded Text")
     EncStr=""
     uptext=(Enterbox.get()).upper()
     for char in uptext:
-        if ord(char)>64 and ord(char)<91:
-            Encchar=(ord(char)-64)%26
-            EncStr+=chr(Encchar+(64+shift))
+        if ord(char)>=Startchr and ord(char)<=Endchr:
+            EncChar=((ord(char)-Startchr+(Shft-1))%26)+1
+            EncStr+=chr(EncChar+Startchr)
         else:
             EncStr+=char
     Resultbox.configure(text=EncStr)
-    return
 
-def Decode():
+def Decode(Startchr,Endchr,Shft):
     ResultLabel.configure(text="Decoded Text")
     DecStr=""
     uptext=(Enterbox.get()).upper()
     for char in uptext:
-        if ord(char)>64 and ord(char)<91:
-            Decchar=(ord(char)-64)%26
-            DecStr+=chr(Decchar+(64-shift))
+        if ord(char)>=Startchr and ord(char)<=Endchr:
+            DecChar=((ord(char)-Startchr+(25-Shft))%26)+1
+            DecStr+=chr(DecChar+Startchr)
         else:
             DecStr+=char
-    Resultbox.configure(text=DecStr)
-    return
+    return Resultbox.configure(text=DecStr)
 
+RBtn1=Radiobutton(root,text="To Encode",variable=Radval,value=1,command=RadioSelect)
+RBtn2=Radiobutton(root,text="To Decode",variable=Radval,value=2,command=RadioSelect)
+ShiftScale=Scale(root,from_=1, to=25,label="Shift Value",orient=HORIZONTAL,length=300,tickinterval=4,variable=Shiftval)
+ImageLabel=Label(root,image=CaesarImg,relief=SUNKEN)
+EnterLabel=Label(root,text="Original Text",relief=SUNKEN)
+Enterbox=Entry(root,width=90,relief=SUNKEN)
+ResultLabel=Label(root,text="             ",relief=SUNKEN)
+Resultbox=Label(root,width=77,relief=SUNKEN,anchor=W)
 
-RBtn1=Radiobutton(root,text="Encode",variable=Radval,value=1,command=Select)
-RBtn2=Radiobutton(root,text="Decode",variable=Radval,value=2,command=Select)
-EnterLabel=Label(root,text="Original Text",relief=RAISED)
-Enterbox=Entry(root,width=76,relief=SUNKEN)
-ResultLabel=Label(root,text="            ",relief=RAISED)
-Resultbox=Label(root,width=65,relief=SUNKEN)
-
-RBtn1.place(x=50,y=150)
-RBtn2.place(x=50,y=180)
+RBtn1.place(x=250,y=150)
+RBtn2.place(x=450,y=150)
+ShiftScale.place(x=250,y=250)
+ImageLabel.place(x=10,y=80)
 EnterLabel.place(x=10,y=20)
 Enterbox.place(x=100,y=20)
 ResultLabel.place(x=10,y=50)
